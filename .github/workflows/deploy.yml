@@ -28,7 +28,8 @@ jobs:
           for file in ${{ steps.modified-files.outputs.files }}; do
               echo "Fue modificado $file"
               if [[ ! "$file" =~ ".yml" && "$file" =~ "Dockerfile" ]]; then
-                  start_deploy="true"
+                echo "Dentro del IF"
+                start_deploy="true"
               fi
           done
           echo "start_deploy<<EOF" >> $GITHUB_ENV
@@ -48,17 +49,17 @@ jobs:
             git fetch origin &&
             git reset --hard origin/main &&
             git pull &&
-            cd servicio-modelosbalizas
+            cd servicio-modelosbalizas &&
             export PATH=/opt/maven/bin:$PATH && mvn clean install -DskipTests &&
             mv ./target/servicio-modelosbalizas-0.0.1-SNAPSHOT.jar ../../servicio-modelosbalizas.jar &&
             cd ../../../ &&
             CONTAINER_NAME="servicio-modelosbalizas" &&
             IMAGE_NAME=$(docker inspect --format='{{.Config.Image}}' "$CONTAINER_NAME") &&
             if [[ -n "$IMAGE_NAME" ]]; then
-              docker stop "$CONTAINER_NAME"  
-              docker rm "$CONTAINER_NAME"
-              docker rmi "$IMAGE_NAME"
+              docker stop "$CONTAINER_NAME" &&
+              docker rm "$CONTAINER_NAME" &&
+              docker rmi "$IMAGE_NAME" &&
               echo "$IMAGE_NAME"
-            fi &&
+            fi;
             docker compose up servicio-modelosbalizas -d'
             exit
