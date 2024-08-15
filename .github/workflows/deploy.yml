@@ -27,7 +27,7 @@ jobs:
           start_deploy="false"
           for file in ${{ steps.modified-files.outputs.files }}; do
               echo "Fue modificado $file"
-              if [[ ! "$file" =~ ".yml" && "$file" =~ "Dockerfile" ]]; then
+              if [[ ! "$file" =~ ".yml" || "$file" =~ "Dockerfile" ]]; then
                 echo "Dentro del IF"
                 start_deploy="true"
               fi
