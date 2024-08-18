@@ -74,7 +74,7 @@ public class ModelosBalizasEventHandler {
         try {
             String descripcionTraza = "Fue creado un nuevo modelo: " + modelo.getDescripcion();
             log.info("*****HandleAfterCreate MODELOS BALIZAS*****");
-            ActualizarTraza(val, modelo.getId(), 1, 1, descripcionTraza,
+            ActualizarTraza(val, modelo.getId().intValue(), 1, 1, descripcionTraza,
                     "Fallo al Actualizar el Modelo en la Trazabilidad");
 
         } catch (Exception e) {
