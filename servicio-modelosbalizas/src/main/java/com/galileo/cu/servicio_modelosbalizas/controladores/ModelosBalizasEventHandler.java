@@ -94,7 +94,8 @@ public class ModelosBalizasEventHandler {
 
             entidad.setId(idTipoEntidad);
             accion.setId(idAccion);
-            usuario.setId(Long.parseLong(val.getJwtObjectMap().getId()));
+            // usuario.setId(Long.parseLong(val.getJwtObjectMap().getId()));
+            usuario.setId(Long.valueOf(val.getJwtObjectMap().getId()));
 
             traza.setAccionEntidad(accion);
             traza.setTipoEntidad(entidad);
