@@ -41,6 +41,7 @@ public class ModelosBalizasEventHandler {
     public void handleModelosBalizasCreate(ModelosBalizas modelo) {
         /* Validando Autorización */
         try {
+            log.info("*****HandleBeforeCreate MODELOS BALIZAS*****");
             ValidateAuthorization val = new ValidateAuthorization();
             val.setObjectMapper(objectMapper);
             val.setReq(req);
@@ -72,6 +73,7 @@ public class ModelosBalizasEventHandler {
 
         try {
             String descripcionTraza = "Fue creado un nuevo modelo: " + modelo.getDescripcion();
+            log.info("*****HandleAfterCreate MODELOS BALIZAS*****");
             ActualizarTraza(val, modelo.getId().intValue(), 1, 1, descripcionTraza,
                     "Fallo al Actualizar el Modelo en la Trazabilidad");
 
