@@ -78,7 +78,7 @@ public class ModelosBalizasEventHandler {
         try {
             String descripcionTraza = "Fue creado un nuevo modelo: " + modelo.getDescripcion();
             log.info("*****HandleAfterCreate MODELOS BALIZAS*****");
-            ActualizarTraza(val, modelo.getId().intValue(), 1, 1, descripcionTraza,
+            ActualizarTraza(val, modelo.getId(), 1, 1, descripcionTraza,
                     "Fallo al Actualizar el Modelo en la Trazabilidad");
 
         } catch (Exception e) {
@@ -126,7 +126,7 @@ public class ModelosBalizasEventHandler {
         try {
             String descripcionTraza = "Fue Actualizado un nuevo modelo: " + modelo.getDescripcion();
             log.info("*****handleAfterUpdate MODELOS BALIZAS*****");
-            ActualizarTraza(val, modelo.getId().intValue(), 1, 3, descripcionTraza,
+            ActualizarTraza(val, modelo.getId(), 1, 3, descripcionTraza,
                     "Fallo al Actualizar el Modelo en la Trazabilidad");
 
         } catch (Exception e) {
@@ -135,7 +135,7 @@ public class ModelosBalizasEventHandler {
         }
     }
 
-    private void ActualizarTraza(ValidateAuthorization val, int idEntidad, int idTipoEntidad,
+    private void ActualizarTraza(ValidateAuthorization val, long idEntidad, int idTipoEntidad,
             int idAccion, String trazaDescripcion, String errorMessage) {
         try {
             log.info("*****Actualizar Traza " + trazaDescripcion);
@@ -156,7 +156,7 @@ public class ModelosBalizasEventHandler {
                 traza.setAccionEntidad(accion);
                 traza.setTipoEntidad(entidad);
                 traza.setUsuario(usuario);
-                traza.setIdEntidad(idEntidad);
+                traza.setIdEntidad((int) idEntidad);
                 traza.setDescripcion(trazaDescripcion);
                 trazasRepo.save(traza);
             } catch (Exception er) {
