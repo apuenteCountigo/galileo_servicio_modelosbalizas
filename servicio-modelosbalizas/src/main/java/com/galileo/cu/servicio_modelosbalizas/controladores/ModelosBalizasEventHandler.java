@@ -86,15 +86,19 @@ public class ModelosBalizasEventHandler {
     private void ActualizarTraza(ValidateAuthorization val, int idEntidad, int idTipoEntidad,
             int idAccion, String trazaDescripcion, String errorMessage) {
         try {
-            System.out.println("Actualizar Traza " + trazaDescripcion);
+            log.info("*****Actualizar Traza " + trazaDescripcion);
             Trazas traza = new Trazas();
             AccionEntidad accion = new AccionEntidad();
             Usuarios usuario = new Usuarios();
             TipoEntidad entidad = new TipoEntidad();
 
-            entidad.setId(idTipoEntidad);
-            accion.setId(idAccion);
-            usuario.setId(Long.parseLong(val.getJwtObjectMap().getId()));
+            try {
+                entidad.setId(idTipoEntidad);
+                accion.setId(idAccion);
+                usuario.setId(Long.parseLong(val.getJwtObjectMap().getId()));
+            } catch (Exception er) {
+                log.error("*****ERROR SETEANDO TRAZA", er.getMessage());
+            }
 
             try {
                 traza.setAccionEntidad(accion);
