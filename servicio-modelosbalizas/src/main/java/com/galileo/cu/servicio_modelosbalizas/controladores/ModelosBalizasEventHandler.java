@@ -135,6 +135,54 @@ public class ModelosBalizasEventHandler {
         }
     }
 
+    @HandleBeforeDelete
+    public void handleModelosBalizasDelete(ModelosBalizas modelo) {
+        /* Validando Autorización */
+        try {
+            log.info("*****handleModelosBalizasDelete MODELOS BALIZAS*****");
+            ValidateAuthorization val = new ValidateAuthorization();
+            val.setObjectMapper(objectMapper);
+            val.setReq(req);
+            if (!val.Validate()) {
+                log.error("Fallo el Usuario Enviado no Coincide con el Autenticado ");
+                throw new RuntimeException("Fallo el Usuario Enviado no Coincide con el Autenticado ");
+            }
+        } catch (Exception e) {
+            log.error("Fallo Antes de Eliminar el Elemento Validando Autorización: ", e.getMessage());
+            throw new RuntimeException(
+                    "Fallo Antes de Eliminar el Elemento Validando Autorización: " + e.getMessage());
+        }
+    }
+
+    @HandleAfterDelete
+    public void handleModelosBalizasAfterDelete(ModelosBalizas modelo) {
+        /* Validando Autorización */
+        ValidateAuthorization val = new ValidateAuthorization();
+        try {
+            val.setObjectMapper(objectMapper);
+            val.setReq(req);
+            if (!val.Validate()) {
+                log.error("Fallo el Usuario Enviado no Coincide con el Autenticado ");
+                throw new RuntimeException("Fallo el Usuario Enviado no Coincide con el Autenticado ");
+            }
+        } catch (Exception e) {
+            log.error("Fallo Después de Eliminar el Elemento Validando Autorización: ", e.getMessage());
+            throw new RuntimeException(
+                    "Fallo Después de Eliminar el Elemento Validando Autorización: " + e.getMessage());
+        }
+
+        try {
+            String descripcionTraza = "Fue Actualizado un modelo: " + modelo.getDescripcion();
+            log.info("*****handleAfterDelete MODELOS BALIZAS*****");
+            ActualizarTraza(val, modelo.getId(), 1, 2, descripcionTraza,
+                    "Fallo al Actualizar el Modelo en la Trazabilidad");
+
+        } catch (Exception e) {
+            log.error("Fallo al Actualizar el Modelo en la Trazabilidad", e.getMessage());
+            throw new RuntimeException("Fallo al Actualizar el Modelo en la Trazabilidad");
+        }
+    }
+
     private void ActualizarTraza(ValidateAuthorization val, long idEntidad, int idTipoEntidad,
             int idAccion, String trazaDescripcion, String errorMessage) {
         try {
