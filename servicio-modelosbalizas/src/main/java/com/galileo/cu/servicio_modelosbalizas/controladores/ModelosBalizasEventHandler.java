@@ -96,12 +96,16 @@ public class ModelosBalizasEventHandler {
             accion.setId(idAccion);
             usuario.setId(Long.parseLong(val.getJwtObjectMap().getId()));
 
-            traza.setAccionEntidad(accion);
-            traza.setTipoEntidad(entidad);
-            traza.setUsuario(usuario);
-            traza.setIdEntidad(idEntidad);
-            traza.setDescripcion(trazaDescripcion);
-            trazasRepo.save(traza);
+            try {
+                traza.setAccionEntidad(accion);
+                traza.setTipoEntidad(entidad);
+                traza.setUsuario(usuario);
+                traza.setIdEntidad(idEntidad);
+                traza.setDescripcion(trazaDescripcion);
+                trazasRepo.save(traza);
+            } catch (Exception er) {
+                log.error("*****ERROR SALVANDO TRAZA", er.getMessage());
+            }
         } catch (Exception e) {
             log.error(errorMessage, e.getMessage());
             throw new RuntimeException(errorMessage);
