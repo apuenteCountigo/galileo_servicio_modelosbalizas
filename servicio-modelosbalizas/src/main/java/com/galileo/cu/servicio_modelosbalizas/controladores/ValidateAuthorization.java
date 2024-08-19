@@ -13,7 +13,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 @Setter
 @AllArgsConstructor
@@ -28,28 +30,28 @@ public class ValidateAuthorization {
         if (req == null) {
             throw new RuntimeException("Error Validando Autorización la Petición no debe ser Nula ");
         }
-        System.out.println("ValidateAuthorization**********************");
-        System.out.println(req.getHeader("Authorization"));
-        System.out.println("METHOD: " + req.getMethod());
+        log.info("ValidateAuthorization**********************");
+        log.info(req.getHeader("Authorization"));
+        log.info("METHOD: " + req.getMethod());
 
         if (!Strings.isNullOrEmpty(req.getHeader("Authorization"))) {
             String token = req.getHeader("Authorization").replace("Bearer ", "");
-            System.out.println(token.toString());
+            log.info(token.toString());
             try {
                 String[] chunks = token.split("\\.");
                 Base64.Decoder decoder = Base64.getUrlDecoder();
                 String header = new String(decoder.decode(chunks[0]));
                 String payload = new String(decoder.decode(chunks[1]));
 
-                System.out.println(payload.toString());
+                log.info("::::PAYLOAD::: " + payload.toString());
 
                 jwtObjectMap = objectMapper.readValue(payload.toString().replace("Perfil", "perfil"),
                         JwtObjectMap.class);
-                System.out.println(jwtObjectMap.getId());
+                log.info("+++++jwtObjectMap.getId()+++ " + jwtObjectMap.getId());
 
-                System.out.println("Path:" + req.getRequestURI());
-                System.out.println("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
-                System.out.println("id parametro: " + req.getParameter("idAuth"));
+                log.info("Path:" + req.getRequestURI());
+                log.info("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
+                log.info("id parametro: " + req.getParameter("idAuth"));
                 if (!Strings.isNullOrEmpty(req.getParameter("idAuth"))
                         && jwtObjectMap.getId().equals(req.getParameter("idAuth"))) {
                     return true;
@@ -59,7 +61,7 @@ public class ValidateAuthorization {
                     return false;
                 }
             } catch (Exception e) {
-                System.out.println("ERROR, Validando Autorización: " + e.getMessage());
+                log.error("ERROR, Validando Autorización: " + e.getMessage());
                 throw new RuntimeException("ERROR, Validando Autorización ");
             }
         } else {
