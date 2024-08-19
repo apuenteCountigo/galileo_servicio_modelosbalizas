@@ -6,6 +6,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.core.annotation.HandleAfterCreate;
 import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
+import org.springframework.data.rest.core.annotation.HandleAfterSave;
+import org.springframework.data.rest.core.annotation.HandleBeforeSave;
+import org.springframework.data.rest.core.annotation.HandleAfterDelete;
+import org.springframework.data.rest.core.annotation.HandleBeforeDelete;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.stereotype.Component;
 
@@ -75,6 +79,54 @@ public class ModelosBalizasEventHandler {
             String descripcionTraza = "Fue creado un nuevo modelo: " + modelo.getDescripcion();
             log.info("*****HandleAfterCreate MODELOS BALIZAS*****");
             ActualizarTraza(val, modelo.getId(), 1, 1, descripcionTraza,
+                    "Fallo al Actualizar el Modelo en la Trazabilidad");
+
+        } catch (Exception e) {
+            log.error("Fallo al Actualizar el Modelo en la Trazabilidad", e.getMessage());
+            throw new RuntimeException("Fallo al Actualizar el Modelo en la Trazabilidad");
+        }
+    }
+
+    @HandleBeforeSave
+    public void handleModelosBalizasUpdate(ModelosBalizas modelo) {
+        /* Validando Autorización */
+        try {
+            log.info("*****handleModelosBalizasUpdate MODELOS BALIZAS*****");
+            ValidateAuthorization val = new ValidateAuthorization();
+            val.setObjectMapper(objectMapper);
+            val.setReq(req);
+            if (!val.Validate()) {
+                log.error("Fallo el Usuario Enviado no Coincide con el Autenticado ");
+                throw new RuntimeException("Fallo el Usuario Enviado no Coincide con el Autenticado ");
+            }
+        } catch (Exception e) {
+            log.error("Fallo Antes de Actualizar el Elemento Validando Autorización: ", e.getMessage());
+            throw new RuntimeException(
+                    "Fallo Antes de Actualizar el Elemento Validando Autorización: " + e.getMessage());
+        }
+    }
+
+    @HandleAfterSave
+    public void handleModelosBalizasAfterUpdate(ModelosBalizas modelo) {
+        /* Validando Autorización */
+        ValidateAuthorization val = new ValidateAuthorization();
+        try {
+            val.setObjectMapper(objectMapper);
+            val.setReq(req);
+            if (!val.Validate()) {
+                log.error("Fallo el Usuario Enviado no Coincide con el Autenticado ");
+                throw new RuntimeException("Fallo el Usuario Enviado no Coincide con el Autenticado ");
+            }
+        } catch (Exception e) {
+            log.error("Fallo Después de Actualizar el Elemento Validando Autorización: ", e.getMessage());
+            throw new RuntimeException(
+                    "Fallo Después de Actualizar el Elemento Validando Autorización: " + e.getMessage());
+        }
+
+        try {
+            String descripcionTraza = "Fue Actualizado un nuevo modelo: " + modelo.getDescripcion();
+            log.info("*****handleAfterUpdate MODELOS BALIZAS*****");
+            ActualizarTraza(val, modelo.getId(), 1, 3, descripcionTraza,
                     "Fallo al Actualizar el Modelo en la Trazabilidad");
 
         } catch (Exception e) {
